@@ -1,0 +1,35 @@
+services:
+  mongo:
+    image: mongo:7
+    ports: ["27017:27017"]
+    volumes: [mongo_data:/data/db]
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  piston:
+    image: ghcr.io/engineer-man/piston:latest
+    privileged: true
+    ports: ["2000:2000"]
+
+  api:
+    build: ./backend
+    ports: ["8080:8080"]
+    environment:
+      PORT: 8080
+      MONGO_URI: mongodb://mongo:27017/runnow
+      JWT_SECRET: runnow-dev-secret-change-in-prod-32chars
+      PISTON_URL: http://piston:2000/api/v2/piston
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  web:
+    build: ./frontend
+    ports: ["3000:80"]
+    depends_on: [api]
+
+volumes:
+  mongo_data:

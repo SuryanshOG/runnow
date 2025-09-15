@@ -1,0 +1,6 @@
+.env
+backend/runnow
+frontend/dist
+frontend/node_modules
+*.log
+mongo_data
