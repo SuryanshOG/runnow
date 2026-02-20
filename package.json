@@ -1,0 +1,8 @@
+{
+  "name": "runnow",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ]
+}
